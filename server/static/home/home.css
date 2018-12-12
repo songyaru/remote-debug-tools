@@ -1,0 +1,12 @@
+ul li {
+    list-style-type: none;
+}
+
+a {
+    background: #fff;
+    display: inline-block;
+}
+
+a.disable {
+    color: #ccc;
+}

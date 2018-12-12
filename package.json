@@ -1,7 +1,7 @@
 {
-  "name": "remote-debug-tools",
-  "version": "1.0.33",
-  "description": "remote debug tools for webview",
+  "name": "adb-devtools",
+  "version": "1.0.42",
+  "description": "adb remote debug tools",
   "main": "command.js",
   "bin": {
     "devtools": "./bin/devtools.js"
@@ -13,16 +13,20 @@
   "license": "MIT",
   "devDependencies": {},
   "dependencies": {
-    "adb-tools": "^1.0.12",
+    "adb-tools": "^1.0.16",
     "chrome-launcher": "^0.10.2",
     "commander": "^2.16.0",
-    "devtools-frontend": "chrome48",
+    "devtools-frontend": "^2.0.0-1",
+    "ios-webkit-debug-tools": "^1.0.3",
     "koa": "^2.5.2",
     "koa-bodyparser": "^4.2.0",
     "koa-cache-control": "^2.0.0",
     "koa-compress": "^2.0.0",
     "koa-router": "^7.4.0",
     "koa-static": "^4.0.2",
+    "koa2-cors": "^2.0.6",
+    "open": "0.0.5",
+    "smartapp-devtools-frontend": "^1.0.1",
     "socket.io": "^2.1.1",
     "socket.io-client": "^2.1.1"
   }

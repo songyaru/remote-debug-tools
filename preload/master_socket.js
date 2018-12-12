@@ -1,18 +1,108 @@
 /* eslint-disable */
 
+// todo 自动生成
+window.Set = window.Set || function () {
+    var items = {};
+
+    this.has = function (value) {
+        return items.hasOwnProperty(value);
+    };
+    this.add = function (value) {
+        if (!this.has(value)) {
+            items[value] = value;
+            return true;
+        }
+        return false;
+    };
+    this.delete = this.remove = function (value) {
+        if (this.has(value)) {
+            delete items[value];
+            return true;
+        }
+        return false;
+    };
+    this.clear = function () {
+        items = {};
+    };
+    this.size = function () {
+        var count = 0;
+        for (var prop in items) {
+            if (items.hasOwnProperty(prop)) {
+                ++count;
+            }
+        }
+        return count;
+    };
+    this.values = function () {
+        var values = [];
+        for (var value in items) {
+            if (items.hasOwnProperty(value)) {
+                values.push(value);
+            }
+        }
+        return values;
+    };
+    this.union = function (otherSet) {
+        var unionSet = new Set();
+        var values = this.values();
+        for (var i = 0; i < values.length; i++) {
+            unionSet.add(values[i]);
+        }
+
+        values = otherSet.values();
+        for (var i = 0; i < values.length; i++) {
+            unionSet.add(values[i]);
+        }
+
+        return unionSet;
+    };
+    this.intersection = function (otherSet) {
+        var intersection = new Set();
+        var values = this.values();
+        for (var i = 0; i < values.length; i++) {
+            if (otherSet.has(values[i])) {
+                intersection.add(values[i]);
+            }
+        }
+        return intersection;
+    };
+    this.difference = function (otherSet) {
+        var difference = new Set();
+        var values = this.values();
+        for (var i = 0; i < values.length; i++) {
+            if (!otherSet.has(values[i])) {
+                difference.add(values[i]);
+            }
+        }
+        return difference;
+    };
+    this.subset = function (otherSet) {
+        var values = this.values();
+        if (this.size() > otherSet.size()) {
+            return false;
+        }
+        else {
+            for (var i = 0; i < values.length; i++) {
+                if (!otherSet.has(values[i])) {
+                    return false;
+                }
+            }
+            return true;
+        }
+    }
+};
+
 var socket = io('http://localhost:8090', {
     'transports': ['websocket', 'polling']
 });
-// console.log('', '   -socket- ', socket);
 
 // master 页面向 server 发送消息
 var sendMessage = function (type, msg) {
     socket.emit('master-server-inspector-message', {type: type, msg: msg});
 };
 
-
-window.getAppData = function (slaveId) {
-    return new Promise((resolve, reject) => {
+var getAppData = function (slaveId) {
+    return new Promise(function (resolve, reject) {
         if (slaveId == undefined) {
             var _slave;
             if (typeof masterManager !== 'undefined') {
@@ -29,7 +119,7 @@ window.getAppData = function (slaveId) {
             slaveId = _slave.getSlaveId();
         }
         socket.emit('master-server-slave-message', {type: 'get-app-data', slaveId: slaveId});
-        socket.once('server-master-message', data => {
+        socket.once('server-master-message', function (data) {
             data.msg = data.msg || {};
             if (data.from === 'slave' && data.msg.slaveId === slaveId) {
                 resolve(data.msg.data);
@@ -45,7 +135,7 @@ socket.on('server-master-message', function (data) {
                 var ret = eval(data.eval);
                 var id = data.id;
                 if (id) {
-                    sendMessage('eval-return', {id, val: ret});
+                    sendMessage('eval-return', {id: id, val: ret});
                 }
                 break;
         }
@@ -58,7 +148,7 @@ socket.on('server-master-message', function (data) {
            }
        }*/
 });
-document.addEventListener('message', ev => {
+document.addEventListener('message', function (ev) {
     var msg = ev.message;
     if (!msg) {
         return;
@@ -82,7 +172,7 @@ document.addEventListener('message', ev => {
 });
 
 
-document.addEventListener('lifecycle', ev => {
+document.addEventListener('lifecycle', function (ev) {
     var slaveId = ev['wvID'] | 0;
     var status = ev['lcType'];
     switch (status) {

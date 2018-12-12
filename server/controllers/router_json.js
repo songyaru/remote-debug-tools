@@ -15,11 +15,22 @@ const filterMiniAppJson = json => {
     });
 };
 let filterJson = data => data;
+
+let filterIosJson = json => {
+    // 为了和 android 对齐
+    json.map(data => {
+        if (/slaves\.html$/.test(data['url']) && /-slave$/.test(data['title'])) {
+            data['description'] = '{"attached":true}';
+        }
+    });
+    return json;
+};
 const routerJson = async ctx => {
     let port = ctx.params.port | 0;
+    let isIos = ctx.query.ios;
     ctx.set('Cache-Control', 'no-cache');
     if (port > 0) {
-        await fetchForwardPort({port, filter: filterJson}).then(({json}) => {
+        await fetchForwardPort({port, filter: isIos ? filterIosJson : filterJson}).then(({json}) => {
             ctx.response.type = 'json';
             ctx.response.body = json;
 

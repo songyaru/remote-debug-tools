@@ -4,7 +4,7 @@
  * Date: 2018/7/5  下午6:26
  * @file constant
  */
-const rootDir = require('devtools-frontend');
+const rootDir = require('smartapp-devtools-frontend');
 
 module.exports = {
     PORT: 8090,

@@ -14,6 +14,9 @@ const constant = require('./constant');
 const httpServerPort = parseInt(process.env.PORT, 10) || constant['PORT'];
 const webviewPrefix = process.env['PREFIX'] || constant['PREFIX'];
 
+const isMasterPage = data => {
+    return data.title === 'background' || /master/.test(data['title']);
+};
 // 获取智能小程序 master 页面的 webSocketDebuggerUrl
 const getMasterPageInfo = info => {
     return new Promise((resolve, reject) => {
@@ -23,12 +26,14 @@ const getMasterPageInfo = info => {
         }
         const json = info['json'];
         const port = info['port'];
+        const version = info['version'];
         let masterWebSocket = '';
         for (let i = 0, len = json.length; i < len; i++) {
             const data = json[i];
-            if (data.title === 'background') {
+            if (isMasterPage(data)) {
                 masterWebSocket = (data.webSocketDebuggerUrl || '').replace(/^ws:\/\//, '');
-                resolve({ws: masterWebSocket, port});
+                let protocolVersion = version && version['Protocol-Version'] || '';
+                resolve({ws: masterWebSocket, port, protocolVersion});
                 return;
             }
         }
@@ -59,8 +64,8 @@ const getSmartAppUrl = ({prefix = webviewPrefix, serverPort = httpServerPort, in
     return new Promise((resolve, reject) => {
         return webviewInfo({prefix, filter})
             .then(infoArrays => getMasterPageInfo(infoArrays[index]))
-            .then(({ws, port}) => {
-                let url = `http://localhost:${serverPort}/devtools/inspector.html?ws=${ws}&fport=${port}`;
+            .then(({ws, port, protocolVersion}) => {
+                let url = `http://localhost:${serverPort}/devtools/inspector.html?ws=${ws}&pv=${protocolVersion}&fport=${port}`;
                 resolve({url, serverPort});
             })
             .catch(e => reject(e));
