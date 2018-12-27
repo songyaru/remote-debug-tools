@@ -93,8 +93,12 @@ devtools -u
 默认每次执行 devtools 都会上传覆盖
 
 
-#### 其他
+#### 技术方案说明
 [真机调试技术方案](https://songyaru.github.io/doc-backup/adb-devtools/)
+
+[如何定制开发者工具](https://songyaru.github.io/doc-backup/devtools/front-end/)
+
+[如何通过替换签名调试 IOS APP](https://songyaru.github.io/doc-backup/resign-app/)
 
 
 
